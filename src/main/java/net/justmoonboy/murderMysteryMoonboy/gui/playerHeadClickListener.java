@@ -44,6 +44,11 @@ public class playerHeadClickListener implements Listener {
             return;
         }
 
+        if (targetName.equals(viewer.getName())) {
+            plugin.getShapeshiftManager().revertShapeshift(viewer);
+            viewer.closeInventory();
+        }
+
         String denialReason = plugin.getShapeshiftManager().canShapeshift(viewer);
         if (denialReason != null) {
             viewer.sendMessage(denialReason);
@@ -51,11 +56,7 @@ public class playerHeadClickListener implements Listener {
         }
 
         viewer.closeInventory();
-        if (targetName.equals(viewer.getName())) {
-            plugin.getShapeshiftManager().revertShapeshift(viewer);
-        }
-        else{
-            plugin.getShapeshiftManager().startShapeshift(viewer, targetName, plugin);
-        }
+        plugin.getShapeshiftManager().startShapeshift(viewer, targetName, plugin);
+
     }
 }
