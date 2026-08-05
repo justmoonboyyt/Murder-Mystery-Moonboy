@@ -51,6 +51,11 @@ public class playerHeadClickListener implements Listener {
         }
 
         viewer.closeInventory();
-        plugin.getShapeshiftManager().startShapeshift(viewer, targetName, plugin);
+        if (targetName.equals(viewer.getName())) {
+            plugin.getShapeshiftManager().revertShapeshift(viewer);
+        }
+        else{
+            plugin.getShapeshiftManager().startShapeshift(viewer, targetName, plugin);
+        }
     }
 }
