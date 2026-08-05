@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.*;
@@ -66,6 +67,16 @@ public class phantomManager {
         return null;
     }
 
+    public String canUnInvis(Player viewer) {
+        if (!hasRole(viewer.getUniqueId())) {
+            return "You dont have the phantom role.";
+        }
+        if (!viewer.hasPotionEffect(PotionEffectType.INVISIBILITY)) {
+            return "You are already visible";
+        }
+        return null;
+    }
+
     public void startInvis(Player viewer, Plugin plugin) {
         UUID id = viewer.getUniqueId();
 
@@ -97,13 +108,13 @@ public class phantomManager {
         viewer.sendMessage("You are now visible.");
     }
 
-    public void resetRoundData(MurderMysteryMoonboy plugin) {
+    public void resetRoundData(MurderMysteryMoonboy plugin, Player viewer) {
         invisCounts.clear();
         for (BukkitTask task : revertTasks.values()) {
             task.cancel();
         }
         revertTasks.clear();
-        currentlyInvis.clear();
+        revertInvis(viewer);
         clearAllPhantoms(plugin);
     }
 }

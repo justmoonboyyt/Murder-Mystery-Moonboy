@@ -69,8 +69,8 @@ public class roundManager {
             player.getInventory().clear();
             player.teleport(spawn);
 
-            ShapeshiftManager.resetRoundData(plugin);
-            PhantomManager.resetRoundData(plugin);
+            ShapeshiftManager.resetRoundData(plugin, player);
+            PhantomManager.resetRoundData(plugin, player);
         }
     }
 }

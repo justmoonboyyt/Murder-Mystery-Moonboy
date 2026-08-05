@@ -7,6 +7,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import java.util.EventListener;
+
 public class phantomItemListener implements Listener {
     private final MurderMysteryMoonboy plugin;
 
@@ -16,26 +18,44 @@ public class phantomItemListener implements Listener {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
-        if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) {
-            return;
+        if (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+
+            Player player = event.getPlayer();
+            if (!phantomItem.isPhantomItem(plugin, event.getItem())){
+                return;
+            }
+
+            if (!plugin.getPhantomManager().hasRole(player.getUniqueId())) {
+                player.sendMessage("Only phantoms can use this.");
+                return;
+            }
+
+            String denialReason = plugin.getPhantomManager().canInvis(player);
+            if (denialReason != null) {
+                player.sendMessage(denialReason);
+                return;
+            }
+
+            plugin.getPhantomManager().startInvis(player, plugin);
+        } else if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
+            Player player = event.getPlayer();
+            if (!phantomItem.isPhantomItem(plugin, event.getItem())){
+                return;
+            }
+
+            if (!plugin.getPhantomManager().hasRole(player.getUniqueId())) {
+                player.sendMessage("Only phantoms can use this.");
+                return;
+            }
+
+            String denialReason = plugin.getPhantomManager().canUnInvis(player);
+            if (denialReason != null) {
+                player.sendMessage(denialReason);
+                return;
+            }
+
+            plugin.getPhantomManager().revertInvis(player);
         }
 
-        Player player = event.getPlayer();
-        if (!phantomItem.isPhantomItem(plugin, event.getItem())){
-            return;
-        }
-
-        if (!plugin.getPhantomManager().hasRole(player.getUniqueId())) {
-            player.sendMessage("Only phantoms can use this.");
-            return;
-        }
-
-        String denialReason = plugin.getPhantomManager().canInvis(player);
-        if (denialReason != null) {
-            player.sendMessage(denialReason);
-            return;
-        }
-
-        plugin.getPhantomManager().startInvis(player, plugin);
     }
 }

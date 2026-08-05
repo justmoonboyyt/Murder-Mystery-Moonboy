@@ -98,13 +98,13 @@ public class shapeshiftManager {
         viewer.sendMessage("Your skin has reverted to normal.");
     }
 
-    public void resetRoundData(MurderMysteryMoonboy plugin) {
+    public void resetRoundData(MurderMysteryMoonboy plugin, Player viewer) {
         shiftCounts.clear();
         for (BukkitTask task : revertTasks.values()) {
             task.cancel();
         }
         revertTasks.clear();
-        currentlyShapeshifted.clear();
+        revertShapeshift(viewer);
         clearAllShapeshifters(plugin);
     }
 }
