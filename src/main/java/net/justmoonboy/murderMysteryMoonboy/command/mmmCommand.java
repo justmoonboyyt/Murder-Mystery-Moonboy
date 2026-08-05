@@ -121,9 +121,10 @@ public class mmmCommand {
                 .then(Commands.argument("target", ArgumentTypes.players())
                         .executes(ctx -> {
                             PlayerSelectorArgumentResolver resolver = ctx.getArgument("target", PlayerSelectorArgumentResolver.class);
-                            Player target = resolver.resolve(ctx.getSource()).get(0);
-                            plugin.getShapeshiftManager().revertShapeshift(target);
-                            ctx.getSource().getSender().sendMessage("Reverted " + target.getName() + "'s disguise.");
+                            for (Player target : resolver.resolve(ctx.getSource())) {
+                                plugin.getShapeshiftManager().revertShapeshift(target);
+                                ctx.getSource().getSender().sendMessage("Reverted " + target.getName() + "'s disguise.");
+                            }
                             return Command.SINGLE_SUCCESS;
                         })
                 );
@@ -134,9 +135,10 @@ public class mmmCommand {
                 .then(Commands.argument("target", ArgumentTypes.players())
                         .executes(ctx -> {
                             PlayerSelectorArgumentResolver resolver = ctx.getArgument("target", PlayerSelectorArgumentResolver.class);
-                            Player target = resolver.resolve(ctx.getSource()).get(0);
-                            plugin.getPhantomManager().revertInvis(target);
-                            ctx.getSource().getSender().sendMessage("Reverted " + target.getName() + "'s invis.");
+                            for (Player target : resolver.resolve(ctx.getSource())) {
+                                plugin.getPhantomManager().revertInvis(target);
+                                ctx.getSource().getSender().sendMessage("Reverted " + target.getName() + "'s invis.");
+                            }
                             return  Command.SINGLE_SUCCESS;
                         }));
     }
