@@ -47,6 +47,7 @@ public class playerHeadClickListener implements Listener {
         if (targetName.equals(viewer.getName())) {
             plugin.getShapeshiftManager().revertShapeshift(viewer);
             viewer.closeInventory();
+            return;
         }
 
         String denialReason = plugin.getShapeshiftManager().canShapeshift(viewer);
