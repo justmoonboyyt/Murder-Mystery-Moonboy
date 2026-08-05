@@ -1,6 +1,7 @@
 package net.justmoonboy.murderMysteryMoonboy.round;
 
 import net.justmoonboy.murderMysteryMoonboy.MurderMysteryMoonboy;
+import net.justmoonboy.murderMysteryMoonboy.phantom.phantomManager;
 import net.justmoonboy.murderMysteryMoonboy.shapeshift.shapeshiftManager;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -39,7 +40,7 @@ public class roundManager {
         return new Location(world, x, y ,z, yaw, pitch);
     }
 
-    public void startRound(shapeshiftManager ShapeshiftManager) {
+    public void startRound(shapeshiftManager ShapeshiftManager, phantomManager PhantomManager) {
         if (roundActive) {
             return;
         }
@@ -49,10 +50,10 @@ public class roundManager {
             player.getInventory().addItem(new ItemStack(Material.COOKED_BEEF, 64));
         }
 
-        endTask = Bukkit.getScheduler().runTaskLater(plugin, () -> endRound(ShapeshiftManager), ROUND_DURATION_TICKS);
+        endTask = Bukkit.getScheduler().runTaskLater(plugin, () -> endRound(ShapeshiftManager, PhantomManager), ROUND_DURATION_TICKS);
     }
 
-    public void endRound(shapeshiftManager ShapeshiftManager) {
+    public void endRound(shapeshiftManager ShapeshiftManager, phantomManager PhantomManager) {
         if (!roundActive) {
             return;
         }
@@ -69,6 +70,7 @@ public class roundManager {
             player.teleport(spawn);
 
             ShapeshiftManager.resetRoundData(plugin);
+            PhantomManager.resetRoundData(plugin);
         }
     }
 }

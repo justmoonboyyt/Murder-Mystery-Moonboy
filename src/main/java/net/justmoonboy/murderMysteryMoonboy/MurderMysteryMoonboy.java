@@ -2,8 +2,10 @@ package net.justmoonboy.murderMysteryMoonboy;
 
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.justmoonboy.murderMysteryMoonboy.command.mmmCommand;
+import net.justmoonboy.murderMysteryMoonboy.gui.phantomItemListener;
 import net.justmoonboy.murderMysteryMoonboy.gui.playerHeadClickListener;
 import net.justmoonboy.murderMysteryMoonboy.gui.shapeshiftItemListener;
+import net.justmoonboy.murderMysteryMoonboy.phantom.phantomManager;
 import net.justmoonboy.murderMysteryMoonboy.round.roundManager;
 import net.justmoonboy.murderMysteryMoonboy.shapeshift.shapeshiftManager;
 import org.bukkit.Bukkit;
@@ -13,18 +15,21 @@ public final class MurderMysteryMoonboy extends JavaPlugin {
 
     private shapeshiftManager ShapeshiftManager;
     private roundManager RoundManager;
+    private phantomManager PhantomManager;
 
     @Override
     public void onEnable() {
         saveDefaultConfig();
 
         ShapeshiftManager = new shapeshiftManager();
+        PhantomManager = new phantomManager();
         RoundManager = new roundManager(this);
 
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, event ->
                 event.registrar().register(mmmCommand.create(this), "Main plugin command"));
         Bukkit.getPluginManager().registerEvents(new playerHeadClickListener(this), this);
         Bukkit.getPluginManager().registerEvents(new shapeshiftItemListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new phantomItemListener(this), this);
     }
 
     public shapeshiftManager getShapeshiftManager() {
@@ -33,6 +38,10 @@ public final class MurderMysteryMoonboy extends JavaPlugin {
 
     public roundManager getRoundManager() {
         return RoundManager;
+    }
+
+    public phantomManager getPhantomManager() {
+        return  PhantomManager;
     }
 
     @Override

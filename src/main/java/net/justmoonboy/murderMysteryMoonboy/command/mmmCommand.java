@@ -9,6 +9,7 @@ import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSelectorArgumentResolver;
 import net.justmoonboy.murderMysteryMoonboy.MurderMysteryMoonboy;
+import net.justmoonboy.murderMysteryMoonboy.gui.phantomItem;
 import net.justmoonboy.murderMysteryMoonboy.gui.shapeshiftItem;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -22,6 +23,7 @@ public class mmmCommand {
                 .then(roleBranch(plugin))
                 .then(roundBranch(plugin))
                 .then(unshiftBranch(plugin))
+                .then(uninvisBranch(plugin))
                 .build();
     }
 
@@ -35,11 +37,15 @@ public class mmmCommand {
                                                 ctx.getArgument("target", PlayerSelectorArgumentResolver.class);
                                         Player target = resolver.resolve(ctx.getSource()).get(0);
 
-                                        plugin.getShapeshiftManager().giveRole(target.getUniqueId());
-                                        target.getInventory().addItem(shapeshiftItem.create(plugin));
-                                        target.sendMessage("You are now a Shapeshifter!");
-                                        ctx.getSource().getSender().sendMessage("Gave shapeshifter role to " + target.getName());
-
+                                        if (!plugin.getRoundManager().isRoundActive()){
+                                            target.sendMessage("Round must be started to give a role.");
+                                        }
+                                        else {
+                                            plugin.getShapeshiftManager().giveRole(target.getUniqueId());
+                                            target.getInventory().addItem(shapeshiftItem.create(plugin));
+                                            target.sendMessage("You are now a Shapeshifter.");
+                                            ctx.getSource().getSender().sendMessage("Gave shapeshifter role to " + target.getName());
+                                        }
                                         return Command.SINGLE_SUCCESS;
                                     })
                             )
@@ -55,6 +61,39 @@ public class mmmCommand {
                                             ctx.getSource().getSender().sendMessage("Removed shapeshifter role from " + target.getName());
 
                                             return Command.SINGLE_SUCCESS;
+                                        }))))
+                .then(Commands.literal("phantom")
+                        .then(Commands.literal("add")
+                                .then(Commands.argument("target", ArgumentTypes.player())
+                                        .executes(ctx -> {
+                                            PlayerSelectorArgumentResolver resolver =
+                                                    ctx.getArgument("target", PlayerSelectorArgumentResolver.class);
+                                            Player target = resolver.resolve(ctx.getSource()).get(0);
+
+                                            if (!plugin.getRoundManager().isRoundActive()){
+                                                target.sendMessage("Round must be started to give a role.");
+                                            }
+                                            else {
+                                                plugin.getPhantomManager().giveRole(target.getUniqueId());
+                                                target.getInventory().addItem(phantomItem.create(plugin));
+                                                target.sendMessage("You are now a Phantom.");
+                                                ctx.getSource().getSender().sendMessage("Gave phantom role to " + target.getName());
+                                            }
+                                            return Command.SINGLE_SUCCESS;
+                                        })
+                                )
+                        ).then(Commands.literal("remove")
+                                .then(Commands.argument("target", ArgumentTypes.player())
+                                        .executes(ctx -> {
+                                            PlayerSelectorArgumentResolver resolver =
+                                                    ctx.getArgument("target", PlayerSelectorArgumentResolver.class);
+                                            Player target = resolver.resolve(ctx.getSource()).get(0);
+
+                                            plugin.getPhantomManager().removeRole(target, plugin);
+                                            target.sendMessage("Your Phantom role has been removed.");
+                                            ctx.getSource().getSender().sendMessage("Removed phantom role from " + target.getName());
+
+                                            return Command.SINGLE_SUCCESS;
                                         }))));
 
     }
@@ -63,23 +102,23 @@ public class mmmCommand {
         return Commands.literal("round")
                 .then(Commands.literal("start")
                         .executes(ctx -> {
-                            plugin.getRoundManager().startRound(plugin.getShapeshiftManager());
+                            plugin.getRoundManager().startRound(plugin.getShapeshiftManager(), plugin.getPhantomManager());
                             ctx.getSource().getSender().sendMessage("Round started.");
                             return Command.SINGLE_SUCCESS;
                         })
                 )
                 .then(Commands.literal("stop")
                         .executes(ctx -> {
-                            plugin.getRoundManager().endRound(plugin.getShapeshiftManager());
+                            plugin.getRoundManager().endRound(plugin.getShapeshiftManager(), plugin.getPhantomManager());
                             ctx.getSource().getSender().sendMessage("Round stopped.");
                             return Command.SINGLE_SUCCESS;
                         })
                 );
     }
 
-    private static com.mojang.brigadier.builder.LiteralArgumentBuilder<CommandSourceStack> unshiftBranch(MurderMysteryMoonboy plugin) {
+    private static LiteralArgumentBuilder<CommandSourceStack> unshiftBranch(MurderMysteryMoonboy plugin) {
         return Commands.literal("unshift")
-                .then(Commands.argument("target", ArgumentTypes.player())
+                .then(Commands.argument("target", ArgumentTypes.players())
                         .executes(ctx -> {
                             PlayerSelectorArgumentResolver resolver = ctx.getArgument("target", PlayerSelectorArgumentResolver.class);
                             Player target = resolver.resolve(ctx.getSource()).get(0);
@@ -88,5 +127,17 @@ public class mmmCommand {
                             return Command.SINGLE_SUCCESS;
                         })
                 );
+    }
+
+    private static LiteralArgumentBuilder<CommandSourceStack> uninvisBranch(MurderMysteryMoonboy plugin) {
+        return Commands.literal("uninvis")
+                .then(Commands.argument("target", ArgumentTypes.players())
+                        .executes(ctx -> {
+                            PlayerSelectorArgumentResolver resolver = ctx.getArgument("target", PlayerSelectorArgumentResolver.class);
+                            Player target = resolver.resolve(ctx.getSource()).get(0);
+                            plugin.getPhantomManager().revertInvis(target);
+                            ctx.getSource().getSender().sendMessage("Reverted " + target.getName() + "'s invis.");
+                            return  Command.SINGLE_SUCCESS;
+                        }));
     }
 }
