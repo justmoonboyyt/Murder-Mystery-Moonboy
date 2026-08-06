@@ -2,6 +2,7 @@ package net.justmoonboy.murderMysteryMoonboy;
 
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.justmoonboy.murderMysteryMoonboy.command.mmmCommand;
+import net.justmoonboy.murderMysteryMoonboy.death.deathListener;
 import net.justmoonboy.murderMysteryMoonboy.gui.phantomItemListener;
 import net.justmoonboy.murderMysteryMoonboy.gui.playerHeadClickListener;
 import net.justmoonboy.murderMysteryMoonboy.gui.shapeshiftItemListener;
@@ -30,6 +31,7 @@ public final class MurderMysteryMoonboy extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new playerHeadClickListener(this), this);
         Bukkit.getPluginManager().registerEvents(new shapeshiftItemListener(this), this);
         Bukkit.getPluginManager().registerEvents(new phantomItemListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new deathListener(this), this);
     }
 
     public shapeshiftManager getShapeshiftManager() {

@@ -3,11 +3,9 @@ package net.justmoonboy.murderMysteryMoonboy.round;
 import net.justmoonboy.murderMysteryMoonboy.MurderMysteryMoonboy;
 import net.justmoonboy.murderMysteryMoonboy.phantom.phantomManager;
 import net.justmoonboy.murderMysteryMoonboy.shapeshift.shapeshiftManager;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.TextDisplay;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -40,6 +38,11 @@ public class roundManager {
         return new Location(world, x, y ,z, yaw, pitch);
     }
 
+    public Player getHost() {
+        var config = plugin.getConfig();
+        return Bukkit.getPlayer(config.getString("host", "host"));
+    }
+
     public void startRound(shapeshiftManager ShapeshiftManager, phantomManager PhantomManager) {
         if (roundActive) {
             return;
@@ -65,12 +68,20 @@ public class roundManager {
         }
 
         Location spawn = getSpawnLocation();
+        Player host = getHost();
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.getInventory().clear();
             player.teleport(spawn);
-
             ShapeshiftManager.resetRoundData(plugin, player);
             PhantomManager.resetRoundData(plugin, player);
+            if (!(player.getName().equals(host.getName()))){
+                player.setGameMode(GameMode.SURVIVAL);
+            }
+        }
+        for (World world : Bukkit.getWorlds()) {
+            for (TextDisplay display : world.getEntitiesByClass(TextDisplay.class)) {
+                display.remove();
+            }
         }
     }
 }
