@@ -2,6 +2,7 @@ package net.justmoonboy.murderMysteryMoonboy.command;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -24,6 +25,7 @@ public class mmmCommand {
                 .then(roundBranch(plugin))
                 .then(unshiftBranch(plugin))
                 .then(uninvisBranch(plugin))
+                .then(freezeBranch(plugin))
                 .build();
     }
 
@@ -141,5 +143,26 @@ public class mmmCommand {
                             }
                             return  Command.SINGLE_SUCCESS;
                         }));
+    }
+
+    private static LiteralArgumentBuilder<CommandSourceStack> freezeBranch(MurderMysteryMoonboy plugin) {
+        return Commands.literal("freeze")
+                .then(Commands.argument("target", ArgumentTypes.players())
+                    .then(Commands.argument("seconds", IntegerArgumentType.integer(1))
+                            .executes(ctx -> {
+                                PlayerSelectorArgumentResolver resolver = ctx.getArgument("target", PlayerSelectorArgumentResolver.class);
+                                int seconds = IntegerArgumentType.getInteger(ctx, "seconds");
+
+                                for (Player target : resolver.resolve(ctx.getSource())) {
+                                    plugin.getFreezeManager().freeze(target);
+                                    target.sendMessage("You have been frozen for " + seconds + " seconds.");
+
+                                    Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                                        plugin.getFreezeManager().unfreeze(target);
+                                        target.sendMessage("You have been unfrozen.");
+                                    }, seconds * 20L);
+                                }
+                                return Command.SINGLE_SUCCESS;
+                            })));
     }
 }

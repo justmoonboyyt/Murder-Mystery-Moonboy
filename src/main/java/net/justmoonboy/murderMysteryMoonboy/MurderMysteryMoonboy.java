@@ -3,6 +3,8 @@ package net.justmoonboy.murderMysteryMoonboy;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.justmoonboy.murderMysteryMoonboy.command.mmmCommand;
 import net.justmoonboy.murderMysteryMoonboy.death.deathListener;
+import net.justmoonboy.murderMysteryMoonboy.freeze.freezeListener;
+import net.justmoonboy.murderMysteryMoonboy.freeze.freezeManager;
 import net.justmoonboy.murderMysteryMoonboy.gui.phantomItemListener;
 import net.justmoonboy.murderMysteryMoonboy.gui.playerHeadClickListener;
 import net.justmoonboy.murderMysteryMoonboy.gui.shapeshiftItemListener;
@@ -17,6 +19,7 @@ public final class MurderMysteryMoonboy extends JavaPlugin {
     private shapeshiftManager ShapeshiftManager;
     private roundManager RoundManager;
     private phantomManager PhantomManager;
+    private freezeManager FreezeManager;
 
     @Override
     public void onEnable() {
@@ -25,6 +28,7 @@ public final class MurderMysteryMoonboy extends JavaPlugin {
         ShapeshiftManager = new shapeshiftManager();
         PhantomManager = new phantomManager();
         RoundManager = new roundManager(this);
+        FreezeManager = new freezeManager();
 
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, event ->
                 event.registrar().register(mmmCommand.create(this), "Main plugin command"));
@@ -32,6 +36,7 @@ public final class MurderMysteryMoonboy extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new shapeshiftItemListener(this), this);
         Bukkit.getPluginManager().registerEvents(new phantomItemListener(this), this);
         Bukkit.getPluginManager().registerEvents(new deathListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new freezeListener(FreezeManager), this);
     }
 
     public shapeshiftManager getShapeshiftManager() {
@@ -44,6 +49,10 @@ public final class MurderMysteryMoonboy extends JavaPlugin {
 
     public phantomManager getPhantomManager() {
         return  PhantomManager;
+    }
+
+    public freezeManager getFreezeManager() {
+        return FreezeManager;
     }
 
     @Override
