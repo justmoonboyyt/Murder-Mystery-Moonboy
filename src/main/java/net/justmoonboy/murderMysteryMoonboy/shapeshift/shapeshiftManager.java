@@ -2,6 +2,7 @@ package net.justmoonboy.murderMysteryMoonboy.shapeshift;
 
 import net.justmoonboy.murderMysteryMoonboy.MurderMysteryMoonboy;
 import net.justmoonboy.murderMysteryMoonboy.gui.shapeshiftItem;
+import net.justmoonboy.murderMysteryMoonboy.gui.murderWeapon;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -47,6 +48,9 @@ public class shapeshiftManager {
         PlayerInventory inv = player.getInventory();
         for (ItemStack item : inv.getContents()) {
             if (shapeshiftItem.isShapeshiftItem(plugin, item)) {
+                inv.remove(item);
+            }
+            if (murderWeapon.isMurderItem(plugin, item)) {
                 inv.remove(item);
             }
         }

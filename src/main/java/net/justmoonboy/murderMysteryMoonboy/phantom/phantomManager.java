@@ -2,6 +2,7 @@ package net.justmoonboy.murderMysteryMoonboy.phantom;
 
 import net.justmoonboy.murderMysteryMoonboy.MurderMysteryMoonboy;
 import net.justmoonboy.murderMysteryMoonboy.gui.phantomItem;
+import net.justmoonboy.murderMysteryMoonboy.gui.murderWeapon;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -54,6 +55,9 @@ public class phantomManager {
         PlayerInventory inv = player.getInventory();
         for (ItemStack item : inv.getContents()) {
             if (phantomItem.isPhantomItem(plugin, item)) {
+                inv.remove(item);
+            }
+            if (murderWeapon.isMurderItem(plugin, item)) {
                 inv.remove(item);
             }
         }

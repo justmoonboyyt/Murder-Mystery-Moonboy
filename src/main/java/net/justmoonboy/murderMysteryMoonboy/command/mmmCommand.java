@@ -12,6 +12,7 @@ import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSele
 import net.justmoonboy.murderMysteryMoonboy.MurderMysteryMoonboy;
 import net.justmoonboy.murderMysteryMoonboy.gui.phantomItem;
 import net.justmoonboy.murderMysteryMoonboy.gui.shapeshiftItem;
+import net.justmoonboy.murderMysteryMoonboy.gui.murderWeapon;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -40,11 +41,12 @@ public class mmmCommand {
                                         Player target = resolver.resolve(ctx.getSource()).get(0);
 
                                         if (!plugin.getRoundManager().isRoundActive()){
-                                            target.sendMessage("Round must be started to give a role.");
+                                            ctx.getSource().getSender().sendMessage("Round must be started to give a role.");
                                         }
                                         else {
                                             plugin.getShapeshiftManager().giveRole(target.getUniqueId());
                                             target.getInventory().addItem(shapeshiftItem.create(plugin));
+                                            target.getInventory().addItem(murderWeapon.create(plugin));
                                             target.sendMessage("You are now a Shapeshifter.");
                                             ctx.getSource().getSender().sendMessage("Gave shapeshifter role to " + target.getName());
                                         }
@@ -73,11 +75,12 @@ public class mmmCommand {
                                             Player target = resolver.resolve(ctx.getSource()).get(0);
 
                                             if (!plugin.getRoundManager().isRoundActive()){
-                                                target.sendMessage("Round must be started to give a role.");
+                                                ctx.getSource().getSender().sendMessage("Round must be started to give a role.");
                                             }
                                             else {
                                                 plugin.getPhantomManager().giveRole(target.getUniqueId());
                                                 target.getInventory().addItem(phantomItem.create(plugin));
+                                                target.getInventory().addItem(murderWeapon.create(plugin));
                                                 target.sendMessage("You are now a Phantom.");
                                                 ctx.getSource().getSender().sendMessage("Gave phantom role to " + target.getName());
                                             }
