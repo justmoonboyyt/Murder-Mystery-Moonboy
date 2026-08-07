@@ -1,7 +1,10 @@
 package net.justmoonboy.murderMysteryMoonboy.death;
 
 import net.justmoonboy.murderMysteryMoonboy.MurderMysteryMoonboy;
+import net.justmoonboy.murderMysteryMoonboy.round.roundManager;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Display;
@@ -18,6 +21,17 @@ public class deathListener implements Listener {
         this.plugin = plugin;
     }
 
+    public Location getSpawnLocation() {
+        var config = plugin.getConfig();
+        World world = Bukkit.getWorld(config.getString("spawn.world", "world"));
+        double x = config.getDouble("spawn.x");
+        double y = config.getDouble("spawn.y");
+        double z = config.getDouble("spawn.z");
+        float yaw = (float) config.getDouble("spawn.yaw");
+        float pitch = (float) config.getDouble("spawn.pitch");
+        return new Location(world, x, y ,z, yaw, pitch);
+    }
+
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
@@ -29,6 +43,12 @@ public class deathListener implements Listener {
         double z = deathLocation.getZ();
         World world = deathLocation.getWorld();
         Location textLocation = new Location(world, x, y, z, 0, 0);
+        if  (!plugin.getRoundManager().isRoundActive()) {
+            Location spawn = getSpawnLocation();
+            player.setGameMode(GameMode.SURVIVAL);
+            player.teleport(spawn);
+            return;
+        }
         summonText(world, textLocation, name);
     }
 
