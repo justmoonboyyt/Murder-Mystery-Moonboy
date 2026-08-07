@@ -49,6 +49,8 @@ public class roundManager {
         }
         roundActive = true;
 
+        plugin.getTablistManager().applyTablistRestriction(Bukkit.getOnlinePlayers());
+
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.getInventory().addItem(new ItemStack(Material.COOKED_BEEF, 64));
         }
@@ -78,6 +80,7 @@ public class roundManager {
                 player.setGameMode(GameMode.SURVIVAL);
             }
         }
+        plugin.getTablistManager().resetTablist(Bukkit.getOnlinePlayers());
         for (World world : Bukkit.getWorlds()) {
             for (TextDisplay display : world.getEntitiesByClass(TextDisplay.class)) {
                 display.remove();

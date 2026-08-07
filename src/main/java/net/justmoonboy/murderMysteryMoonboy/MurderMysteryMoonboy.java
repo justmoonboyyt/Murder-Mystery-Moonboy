@@ -11,6 +11,7 @@ import net.justmoonboy.murderMysteryMoonboy.gui.shapeshiftItemListener;
 import net.justmoonboy.murderMysteryMoonboy.phantom.phantomManager;
 import net.justmoonboy.murderMysteryMoonboy.round.roundManager;
 import net.justmoonboy.murderMysteryMoonboy.shapeshift.shapeshiftManager;
+import net.justmoonboy.murderMysteryMoonboy.tablist.tablistManager;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -20,6 +21,7 @@ public final class MurderMysteryMoonboy extends JavaPlugin {
     private roundManager RoundManager;
     private phantomManager PhantomManager;
     private freezeManager FreezeManager;
+    private tablistManager TablistManager;
 
     @Override
     public void onEnable() {
@@ -29,6 +31,7 @@ public final class MurderMysteryMoonboy extends JavaPlugin {
         PhantomManager = new phantomManager();
         RoundManager = new roundManager(this);
         FreezeManager = new freezeManager();
+        TablistManager = new tablistManager(this);
 
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, event ->
                 event.registrar().register(mmmCommand.create(this), "Main plugin command"));
@@ -53,6 +56,10 @@ public final class MurderMysteryMoonboy extends JavaPlugin {
 
     public freezeManager getFreezeManager() {
         return FreezeManager;
+    }
+
+    public tablistManager getTablistManager() {
+        return TablistManager;
     }
 
     @Override
