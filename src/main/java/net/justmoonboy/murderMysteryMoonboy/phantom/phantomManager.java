@@ -21,6 +21,12 @@ public class phantomManager {
     private final Map<UUID, BukkitTask> revertTasks = new HashMap<>();
     private final Map<UUID, Integer> invisCounts = new HashMap<>();
 
+    private final MurderMysteryMoonboy plugin;
+
+    public phantomManager(MurderMysteryMoonboy plugin) {
+        this.plugin = plugin;
+    }
+
     public void giveRole(UUID playerId) {
         phantoms.add(playerId);
     }

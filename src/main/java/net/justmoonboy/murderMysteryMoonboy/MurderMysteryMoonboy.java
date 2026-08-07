@@ -28,7 +28,7 @@ public final class MurderMysteryMoonboy extends JavaPlugin {
         saveDefaultConfig();
 
         ShapeshiftManager = new shapeshiftManager();
-        PhantomManager = new phantomManager();
+        PhantomManager = new phantomManager(this);
         RoundManager = new roundManager(this);
         FreezeManager = new freezeManager();
         TablistManager = new tablistManager(this);
