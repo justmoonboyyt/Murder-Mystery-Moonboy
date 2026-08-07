@@ -18,8 +18,8 @@ public class tablistManager {
         return Bukkit.getPlayer(config.getString("host", "host"));
     }
 
-    Player host = getHost();
     public void applyTablistRestriction(Collection<? extends Player> onlinePlayers) {
+        Player host = getHost();
         for (Player viewer : onlinePlayers) {
             if (viewer.equals(host)) {
                 continue;

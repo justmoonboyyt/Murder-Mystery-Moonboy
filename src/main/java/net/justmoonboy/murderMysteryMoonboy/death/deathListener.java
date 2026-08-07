@@ -3,16 +3,19 @@ package net.justmoonboy.murderMysteryMoonboy.death;
 import net.justmoonboy.murderMysteryMoonboy.MurderMysteryMoonboy;
 import net.justmoonboy.murderMysteryMoonboy.round.roundManager;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Display;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Iterator;
+import java.util.List;
 
 public class deathListener implements Listener {
     private final MurderMysteryMoonboy plugin;
@@ -50,6 +53,14 @@ public class deathListener implements Listener {
             return;
         }
         summonText(world, textLocation, name);
+        for (Iterator<ItemStack> iterator = event.getDrops().iterator(); iterator.hasNext();) {
+            ItemStack drop = iterator.next();
+            Material type = drop.getType();
+            if (type == Material.COOKED_BEEF || type == Material.PAPER) {
+                iterator.remove();
+                event.getItemsToKeep().add(drop);
+            }
+        }
     }
 
     public void summonText(World world, Location textLocation, String name) {
