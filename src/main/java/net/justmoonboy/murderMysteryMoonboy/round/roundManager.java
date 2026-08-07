@@ -1,16 +1,25 @@
 package net.justmoonboy.murderMysteryMoonboy.round;
 
 import net.justmoonboy.murderMysteryMoonboy.MurderMysteryMoonboy;
+import net.justmoonboy.murderMysteryMoonboy.gui.murderWeapon;
+import net.justmoonboy.murderMysteryMoonboy.gui.phantomItem;
+import net.justmoonboy.murderMysteryMoonboy.gui.shapeshiftItem;
 import net.justmoonboy.murderMysteryMoonboy.phantom.phantomManager;
 import net.justmoonboy.murderMysteryMoonboy.shapeshift.shapeshiftManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.title.Title;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.security.KeyStore;
+import java.time.Duration;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 public class roundManager {
     private static final long ROUND_DURATION_TICKS = 20L * 60L * 20L;
@@ -43,19 +52,45 @@ public class roundManager {
         return Bukkit.getPlayer(config.getString("host", "host"));
     }
 
-    public void startRound(shapeshiftManager ShapeshiftManager, phantomManager PhantomManager) {
+    private static final Random RANDOM = new Random();
+
+    public int startRound(int murdererCount, shapeshiftManager ShapeshiftManager, phantomManager PhantomManager) {
         if (roundActive) {
-            return;
+            return -1;
         }
         roundActive = true;
 
         plugin.getTablistManager().applyTablistRestriction(Bukkit.getOnlinePlayers());
 
+        Player host = getHost();
+        List<Player> eligible = new ArrayList<>();
         for (Player player : Bukkit.getOnlinePlayers()) {
             player.getInventory().addItem(new ItemStack(Material.COOKED_BEEF, 64));
+            if (host == null || !player.getUniqueId().equals(host.getUniqueId())) {
+                eligible.add(player);
+            }
+        }
+
+        Collections.shuffle(eligible);
+        int actualCount = Math.min(murdererCount, eligible.size());
+        List<Player> murderers = eligible.subList(0, actualCount);
+
+        for (Player murderer : murderers) {
+            if (RANDOM.nextBoolean()) {
+                PhantomManager.giveRole(murderer.getUniqueId());
+                murderer.getInventory().addItem(phantomItem.create(plugin));
+                murderer.getInventory().addItem(murderWeapon.create(plugin));
+                showRoleTitle(murderer, "Phantom");
+            } else {
+                ShapeshiftManager.giveRole(murderer.getUniqueId());
+                murderer.getInventory().addItem(shapeshiftItem.create(plugin));
+                murderer.getInventory().addItem(murderWeapon.create(plugin));
+                showRoleTitle(murderer, "Shapeshifter");
+            }
         }
 
         endTask = Bukkit.getScheduler().runTaskLater(plugin, () -> endRound(ShapeshiftManager, PhantomManager), ROUND_DURATION_TICKS);
+        return murdererCount;
     }
 
     public void endRound(shapeshiftManager ShapeshiftManager, phantomManager PhantomManager) {
@@ -86,5 +121,14 @@ public class roundManager {
                 display.remove();
             }
         }
+    }
+
+    private void showRoleTitle(Player player, String roleName) {
+        Title title = Title.title(
+                Component.text("You are the " + roleName, NamedTextColor.DARK_RED),
+                Component.text("Eliminate everyone without getting caught."),
+                Title.Times.times(Duration.ofMillis(500), Duration.ofSeconds(3), Duration.ofMillis(500))
+        );
+        player.showTitle(title);
     }
 }

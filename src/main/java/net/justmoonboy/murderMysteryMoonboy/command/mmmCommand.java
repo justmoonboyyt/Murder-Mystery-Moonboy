@@ -106,11 +106,22 @@ public class mmmCommand {
     public static LiteralArgumentBuilder<CommandSourceStack> roundBranch(MurderMysteryMoonboy plugin) {
         return Commands.literal("round")
                 .then(Commands.literal("start")
-                        .executes(ctx -> {
-                            plugin.getRoundManager().startRound(plugin.getShapeshiftManager(), plugin.getPhantomManager());
-                            ctx.getSource().getSender().sendMessage("Round started.");
-                            return Command.SINGLE_SUCCESS;
-                        })
+                        .then(Commands.argument("murderers", IntegerArgumentType.integer(1))
+                                .executes(ctx -> {
+                                    int murdererCount = IntegerArgumentType.getInteger(ctx, "murderers");
+                                    int assigned = plugin.getRoundManager().startRound(
+                                            murdererCount, plugin.getShapeshiftManager(), plugin.getPhantomManager());
+                                    if (assigned < 0) {
+                                        ctx.getSource().getSender().sendMessage("A round is already active.");
+                                    } else if (assigned < murdererCount) {
+                                        ctx.getSource().getSender().sendMessage(
+                                                "Only " + assigned + " eligible player(s) online; assigned " + assigned + " murderer(s).");
+                                    } else {
+                                        ctx.getSource().getSender().sendMessage("Round started with " + assigned + " murderer(s).");
+                                    }
+                                    return Command.SINGLE_SUCCESS;
+                                })
+                        )
                 )
                 .then(Commands.literal("stop")
                         .executes(ctx -> {
