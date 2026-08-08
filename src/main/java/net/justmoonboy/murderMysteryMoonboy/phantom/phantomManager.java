@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -93,7 +94,7 @@ public class phantomManager {
         currentlyInvis.add(id);
         invisCounts.merge(id, 1, Integer::sum);
 
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "effect give " + viewer.getName() + " minecraft:invisibility 60 1 true");
+        viewer.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 60 * 20, 0, true, true));
         viewer.sendMessage("You are now invis for 1 minute.");
 
         BukkitTask task = Bukkit.getScheduler().runTaskLater(plugin, () -> {

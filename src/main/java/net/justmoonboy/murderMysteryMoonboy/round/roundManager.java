@@ -1,10 +1,7 @@
 package net.justmoonboy.murderMysteryMoonboy.round;
 
 import net.justmoonboy.murderMysteryMoonboy.MurderMysteryMoonboy;
-import net.justmoonboy.murderMysteryMoonboy.gui.murderWeapon;
-import net.justmoonboy.murderMysteryMoonboy.gui.phantomItem;
-import net.justmoonboy.murderMysteryMoonboy.gui.shapeshiftItem;
-import net.justmoonboy.murderMysteryMoonboy.gui.vigilanteWeapon;
+import net.justmoonboy.murderMysteryMoonboy.gui.*;
 import net.justmoonboy.murderMysteryMoonboy.phantom.phantomManager;
 import net.justmoonboy.murderMysteryMoonboy.shapeshift.shapeshiftManager;
 import net.kyori.adventure.text.Component;
@@ -81,11 +78,13 @@ public class roundManager {
                 PhantomManager.giveRole(murderer.getUniqueId());
                 murderer.getInventory().addItem(phantomItem.create(plugin));
                 murderer.getInventory().addItem(murderWeapon.create(plugin));
+                murderer.getInventory().addItem(blindnessItem.create(plugin));
                 showMurdererRoleTitle(murderer, "Phantom");
             } else {
                 ShapeshiftManager.giveRole(murderer.getUniqueId());
                 murderer.getInventory().addItem(shapeshiftItem.create(plugin));
                 murderer.getInventory().addItem(murderWeapon.create(plugin));
+                murderer.getInventory().addItem(blindnessItem.create(plugin));
                 showMurdererRoleTitle(murderer, "Shapeshifter");
             }
         }

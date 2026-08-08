@@ -40,6 +40,7 @@ public final class MurderMysteryMoonboy extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new freezeListener(FreezeManager), this);
         Bukkit.getPluginManager().registerEvents(new murderItemListener(this), this);
         Bukkit.getPluginManager().registerEvents(new vigilanteItemListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new blindnessItemListener(this), this);
     }
 
     public shapeshiftManager getShapeshiftManager() {
