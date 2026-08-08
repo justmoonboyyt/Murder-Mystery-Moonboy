@@ -57,7 +57,7 @@ public class deathListener implements Listener {
         for (Iterator<ItemStack> iterator = event.getDrops().iterator(); iterator.hasNext();) {
             ItemStack drop = iterator.next();
             Material type = drop.getType();
-            if (type == Material.COOKED_BEEF || type == Material.STICK || type == Material.BLAZE_ROD || type == Material.GHAST_TEAR || type == Material.GLOWSTONE_DUST || type == Material.BAMBOO) {
+            if (type == Material.COOKED_BEEF || type == Material.STICK || type == Material.BLAZE_ROD || type == Material.GHAST_TEAR || type == Material.GLOWSTONE_DUST) {
                 iterator.remove();
                 event.getItemsToKeep().add(drop);
             }
