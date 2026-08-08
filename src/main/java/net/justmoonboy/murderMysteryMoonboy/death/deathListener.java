@@ -52,26 +52,21 @@ public class deathListener implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
-        String name = player.getName();
         Location deathLocation = player.getLocation();
-
-        double x = deathLocation.getX();
-        double y = deathLocation.getY() + 1;
-        double z = deathLocation.getZ();
         World world = deathLocation.getWorld();
-        Location textLocation = new Location(world, x, y, z, 0, 0);
-        if  (!plugin.getRoundManager().isRoundActive()) {
-            return;
-        }
-        summonText(world, textLocation, name);
         for (Iterator<ItemStack> iterator = event.getDrops().iterator(); iterator.hasNext();) {
             ItemStack drop = iterator.next();
             Material type = drop.getType();
-            if (type == Material.COOKED_BEEF || type == Material.PAPER || type == Material.STICK || type == Material.BLAZE_ROD || type == Material.GHAST_TEAR) {
+            if (type == Material.COOKED_BEEF || type == Material.STICK || type == Material.BLAZE_ROD || type == Material.GHAST_TEAR || type == Material.GLOWSTONE_DUST || type == Material.BAMBOO) {
                 iterator.remove();
                 event.getItemsToKeep().add(drop);
             }
         }
+        if (!plugin.getRoundManager().isRoundActive()) {
+            return;
+        }
+        Location textLocation = new Location(world, deathLocation.getX(), deathLocation.getY() + 1, deathLocation.getZ(), 0, 0);
+        summonText(world, textLocation, player.getName());
     }
 
     public void summonText(World world, Location textLocation, String name) {
