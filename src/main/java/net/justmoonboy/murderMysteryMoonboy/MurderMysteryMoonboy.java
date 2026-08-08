@@ -5,6 +5,7 @@ import net.justmoonboy.murderMysteryMoonboy.command.mmmCommand;
 import net.justmoonboy.murderMysteryMoonboy.death.deathListener;
 import net.justmoonboy.murderMysteryMoonboy.freeze.freezeListener;
 import net.justmoonboy.murderMysteryMoonboy.freeze.freezeManager;
+import net.justmoonboy.murderMysteryMoonboy.groupTimer.groupTimerManager;
 import net.justmoonboy.murderMysteryMoonboy.gui.*;
 import net.justmoonboy.murderMysteryMoonboy.phantom.phantomManager;
 import net.justmoonboy.murderMysteryMoonboy.round.roundManager;
@@ -20,6 +21,7 @@ public final class MurderMysteryMoonboy extends JavaPlugin {
     private phantomManager PhantomManager;
     private freezeManager FreezeManager;
     private tablistManager TablistManager;
+    private groupTimerManager GroupTimerManager;
 
     @Override
     public void onEnable() {
@@ -30,6 +32,7 @@ public final class MurderMysteryMoonboy extends JavaPlugin {
         RoundManager = new roundManager(this);
         FreezeManager = new freezeManager();
         TablistManager = new tablistManager(this);
+        GroupTimerManager = new groupTimerManager(this);
 
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, event ->
                 event.registrar().register(mmmCommand.create(this), "Main plugin command"));
@@ -61,6 +64,10 @@ public final class MurderMysteryMoonboy extends JavaPlugin {
 
     public tablistManager getTablistManager() {
         return TablistManager;
+    }
+
+    public groupTimerManager getGroupTimerManager() {
+        return GroupTimerManager;
     }
 
     @Override

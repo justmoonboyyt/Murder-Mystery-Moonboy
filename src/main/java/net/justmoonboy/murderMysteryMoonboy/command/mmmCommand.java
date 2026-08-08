@@ -15,6 +15,7 @@ import net.justmoonboy.murderMysteryMoonboy.gui.shapeshiftItem;
 import net.justmoonboy.murderMysteryMoonboy.gui.murderWeapon;
 import net.justmoonboy.murderMysteryMoonboy.gui.vigilanteWeapon;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import java.util.stream.Collectors;
@@ -28,11 +29,13 @@ public class mmmCommand {
                 .then(unshiftBranch(plugin))
                 .then(uninvisBranch(plugin))
                 .then(freezeBranch(plugin))
+                .then(stuckBranch(plugin))
                 .build();
     }
 
     private static LiteralArgumentBuilder<CommandSourceStack> roleBranch(MurderMysteryMoonboy plugin) {
         return Commands.literal("role")
+                .requires(source -> source.getSender().isOp())
                 .then(Commands.literal("shapeshifter")
                         .then(Commands.literal("add")
                             .then(Commands.argument("target", ArgumentTypes.player())
@@ -124,6 +127,7 @@ public class mmmCommand {
 
     public static LiteralArgumentBuilder<CommandSourceStack> roundBranch(MurderMysteryMoonboy plugin) {
         return Commands.literal("round")
+                .requires(source -> source.getSender().isOp())
                 .then(Commands.literal("start")
                         .then(Commands.argument("murderers", IntegerArgumentType.integer(1))
                                 .executes(ctx -> {
@@ -153,6 +157,7 @@ public class mmmCommand {
 
     private static LiteralArgumentBuilder<CommandSourceStack> unshiftBranch(MurderMysteryMoonboy plugin) {
         return Commands.literal("unshift")
+                .requires(source -> source.getSender().isOp())
                 .then(Commands.argument("target", ArgumentTypes.players())
                         .executes(ctx -> {
                             PlayerSelectorArgumentResolver resolver = ctx.getArgument("target", PlayerSelectorArgumentResolver.class);
@@ -167,6 +172,7 @@ public class mmmCommand {
 
     private static LiteralArgumentBuilder<CommandSourceStack> uninvisBranch(MurderMysteryMoonboy plugin) {
         return Commands.literal("uninvis")
+                .requires(source -> source.getSender().isOp())
                 .then(Commands.argument("target", ArgumentTypes.players())
                         .executes(ctx -> {
                             PlayerSelectorArgumentResolver resolver = ctx.getArgument("target", PlayerSelectorArgumentResolver.class);
@@ -180,6 +186,7 @@ public class mmmCommand {
 
     private static LiteralArgumentBuilder<CommandSourceStack> freezeBranch(MurderMysteryMoonboy plugin) {
         return Commands.literal("freeze")
+                .requires(source -> source.getSender().isOp())
                 .then(Commands.argument("target", ArgumentTypes.players())
                     .then(Commands.argument("seconds", IntegerArgumentType.integer(1))
                             .executes(ctx -> {
@@ -197,5 +204,15 @@ public class mmmCommand {
                                 }
                                 return Command.SINGLE_SUCCESS;
                             })));
+    }
+
+    private static LiteralArgumentBuilder<CommandSourceStack> stuckBranch(MurderMysteryMoonboy plugin) {
+        return Commands.literal("stuck")
+                .executes(ctx -> {
+                    Player sender = (Player) ctx.getSource().getSender();
+                    Location spawn = plugin.getRoundManager().getSpawnLocation();
+                    sender.teleport(spawn);
+                    return Command.SINGLE_SUCCESS;
+                });
     }
 }

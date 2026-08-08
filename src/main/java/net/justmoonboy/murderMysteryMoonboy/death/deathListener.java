@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -36,6 +37,19 @@ public class deathListener implements Listener {
     }
 
     @EventHandler
+    public void onEntityDamage(EntityDamageEvent event) {
+        if (!(event.getEntity() instanceof Player)) {
+            return;
+        }
+        if (!plugin.getRoundManager().isRoundActive()) {
+            event.setCancelled(true);
+            Player player = (Player) event.getEntity();
+            Location spawn = getSpawnLocation();
+            player.teleport(spawn);
+        }
+    }
+
+    @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
         String name = player.getName();
@@ -47,9 +61,6 @@ public class deathListener implements Listener {
         World world = deathLocation.getWorld();
         Location textLocation = new Location(world, x, y, z, 0, 0);
         if  (!plugin.getRoundManager().isRoundActive()) {
-            Location spawn = getSpawnLocation();
-            player.setGameMode(GameMode.SURVIVAL);
-            player.teleport(spawn);
             return;
         }
         summonText(world, textLocation, name);

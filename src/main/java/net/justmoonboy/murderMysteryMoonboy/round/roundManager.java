@@ -58,6 +58,8 @@ public class roundManager {
         }
         roundActive = true;
 
+        plugin.getGroupTimerManager().start();
+
         plugin.getTablistManager().applyTablistRestriction(Bukkit.getOnlinePlayers());
 
         Player host = getHost();
@@ -105,6 +107,8 @@ public class roundManager {
             return;
         }
         roundActive = false;
+
+        plugin.getGroupTimerManager().stop();
 
         if (endTask != null) {
             endTask.cancel();

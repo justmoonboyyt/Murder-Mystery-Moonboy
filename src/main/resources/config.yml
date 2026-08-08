@@ -7,3 +7,15 @@ spawn:
   pitch: 0.0
 
 host: Just_moonboy
+
+border:
+  minX: -200
+  maxX: 200
+  minZ: -200
+  maxZ: 200
+  YLevels: [64, 70, 78] #must be one lower than where you stand
+
+groupTimer:
+  radius: 10
+  warnSeconds: 60
+  teleportSeconds: 120
