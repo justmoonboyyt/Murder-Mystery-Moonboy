@@ -12,14 +12,15 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class deathListener implements Listener {
     private final MurderMysteryMoonboy plugin;
+    private final Map<UUID, Location> deathLocations = new HashMap<>();
 
     public deathListener(MurderMysteryMoonboy plugin) {
         this.plugin = plugin;
@@ -52,8 +53,19 @@ public class deathListener implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
+        String name = player.getName();
         Location deathLocation = player.getLocation();
+
+        double x = deathLocation.getX();
+        double y = deathLocation.getY() + 1;
+        double z = deathLocation.getZ();
         World world = deathLocation.getWorld();
+        Location textLocation = new Location(world, x, y, z, 0, 0);
+        deathLocations.put(player.getUniqueId(), deathLocation.clone());
+        if  (!plugin.getRoundManager().isRoundActive()) {
+            return;
+        }
+        summonText(world, textLocation, name);
         for (Iterator<ItemStack> iterator = event.getDrops().iterator(); iterator.hasNext();) {
             ItemStack drop = iterator.next();
             Material type = drop.getType();
@@ -62,11 +74,18 @@ public class deathListener implements Listener {
                 event.getItemsToKeep().add(drop);
             }
         }
-        if (!plugin.getRoundManager().isRoundActive()) {
+    }
+
+    @EventHandler
+    public void onPlayerRespawn(PlayerRespawnEvent event) {
+        Player player = event.getPlayer();
+        Location deathLoc = deathLocations.remove(player.getUniqueId());
+        if (deathLoc == null) {
             return;
         }
-        Location textLocation = new Location(world, deathLocation.getX(), deathLocation.getY() + 1, deathLocation.getZ(), 0, 0);
-        summonText(world, textLocation, player.getName());
+
+        event.setRespawnLocation(deathLoc);
+        Bukkit.getScheduler().runTask(plugin, () -> player.setGameMode(GameMode.SPECTATOR));
     }
 
     public void summonText(World world, Location textLocation, String name) {

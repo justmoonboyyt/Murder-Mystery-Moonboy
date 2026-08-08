@@ -12,6 +12,9 @@ import net.justmoonboy.murderMysteryMoonboy.round.roundManager;
 import net.justmoonboy.murderMysteryMoonboy.shapeshift.shapeshiftManager;
 import net.justmoonboy.murderMysteryMoonboy.tablist.tablistManager;
 import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
+import org.bukkit.GameRules;
+import org.bukkit.World;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class MurderMysteryMoonboy extends JavaPlugin {
@@ -44,6 +47,10 @@ public final class MurderMysteryMoonboy extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new murderItemListener(this), this);
         Bukkit.getPluginManager().registerEvents(new vigilanteItemListener(this), this);
         Bukkit.getPluginManager().registerEvents(new blindnessItemListener(this), this);
+
+        for (World world : Bukkit.getWorlds()) {
+            world.setGameRule(GameRules.IMMEDIATE_RESPAWN, true);
+        }
     }
 
     public shapeshiftManager getShapeshiftManager() {
