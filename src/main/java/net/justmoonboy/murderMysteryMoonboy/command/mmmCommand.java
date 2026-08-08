@@ -13,6 +13,7 @@ import net.justmoonboy.murderMysteryMoonboy.MurderMysteryMoonboy;
 import net.justmoonboy.murderMysteryMoonboy.gui.phantomItem;
 import net.justmoonboy.murderMysteryMoonboy.gui.shapeshiftItem;
 import net.justmoonboy.murderMysteryMoonboy.gui.murderWeapon;
+import net.justmoonboy.murderMysteryMoonboy.gui.vigilanteWeapon;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -99,7 +100,25 @@ public class mmmCommand {
                                             ctx.getSource().getSender().sendMessage("Removed phantom role from " + target.getName());
 
                                             return Command.SINGLE_SUCCESS;
-                                        }))));
+                                        }))))
+
+                .then(Commands.literal("vigilante")
+                        .then(Commands.literal("add")
+                                .then(Commands.argument("target", ArgumentTypes.player())
+                                        .executes(ctx -> {
+                                            PlayerSelectorArgumentResolver resolver =
+                                                    ctx.getArgument("target", PlayerSelectorArgumentResolver.class);
+                                            Player target = resolver.resolve(ctx.getSource()).get(0);
+
+                                            if (!plugin.getRoundManager().isRoundActive()){
+                                                ctx.getSource().getSender().sendMessage("Round must be started to give a role.");
+                                            }
+                                            else {
+                                                target.getInventory().addItem(vigilanteWeapon.create(plugin));
+                                            }
+                                            return Command.SINGLE_SUCCESS;
+                                        })
+                                )));
 
     }
 

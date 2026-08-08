@@ -4,6 +4,7 @@ import net.justmoonboy.murderMysteryMoonboy.MurderMysteryMoonboy;
 import net.justmoonboy.murderMysteryMoonboy.gui.murderWeapon;
 import net.justmoonboy.murderMysteryMoonboy.gui.phantomItem;
 import net.justmoonboy.murderMysteryMoonboy.gui.shapeshiftItem;
+import net.justmoonboy.murderMysteryMoonboy.gui.vigilanteWeapon;
 import net.justmoonboy.murderMysteryMoonboy.phantom.phantomManager;
 import net.justmoonboy.murderMysteryMoonboy.shapeshift.shapeshiftManager;
 import net.kyori.adventure.text.Component;
@@ -80,13 +81,20 @@ public class roundManager {
                 PhantomManager.giveRole(murderer.getUniqueId());
                 murderer.getInventory().addItem(phantomItem.create(plugin));
                 murderer.getInventory().addItem(murderWeapon.create(plugin));
-                showRoleTitle(murderer, "Phantom");
+                showMurdererRoleTitle(murderer, "Phantom");
             } else {
                 ShapeshiftManager.giveRole(murderer.getUniqueId());
                 murderer.getInventory().addItem(shapeshiftItem.create(plugin));
                 murderer.getInventory().addItem(murderWeapon.create(plugin));
-                showRoleTitle(murderer, "Shapeshifter");
+                showMurdererRoleTitle(murderer, "Shapeshifter");
             }
+        }
+
+        List<Player> innocents = eligible.subList(actualCount, eligible.size());
+        if (!innocents.isEmpty()) {
+            Player vigilante = innocents.get(RANDOM.nextInt(innocents.size()));
+            vigilante.getInventory().addItem(vigilanteWeapon.create(plugin));
+            showVigilanteRoleTitle(vigilante, "Vigilante");
         }
 
         endTask = Bukkit.getScheduler().runTaskLater(plugin, () -> endRound(ShapeshiftManager, PhantomManager), ROUND_DURATION_TICKS);
@@ -123,10 +131,19 @@ public class roundManager {
         }
     }
 
-    private void showRoleTitle(Player player, String roleName) {
+    private void showMurdererRoleTitle(Player player, String roleName) {
         Title title = Title.title(
                 Component.text("You are the " + roleName, NamedTextColor.DARK_RED),
                 Component.text("Eliminate everyone without getting caught."),
+                Title.Times.times(Duration.ofMillis(500), Duration.ofSeconds(3), Duration.ofMillis(500))
+        );
+        player.showTitle(title);
+    }
+
+    private void showVigilanteRoleTitle(Player player, String roleName) {
+        Title title = Title.title(
+                Component.text("You are the " + roleName, NamedTextColor.DARK_GREEN),
+                Component.text("Eliminate the murderer without killing any innocents."),
                 Title.Times.times(Duration.ofMillis(500), Duration.ofSeconds(3), Duration.ofMillis(500))
         );
         player.showTitle(title);
