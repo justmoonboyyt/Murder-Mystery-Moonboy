@@ -13,7 +13,7 @@ public class shapeshiftItem {
     public static final String KEY = "shapeshift_item";
 
     public static ItemStack create(Plugin plugin) {
-        ItemStack item = new ItemStack(Material.BLAZE_ROD);
+        ItemStack item = new ItemStack(Material.PAPER);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName(ChatColor.GOLD + "Relic of the Doppelgänger");
         meta.getPersistentDataContainer().set(
