@@ -26,17 +26,6 @@ public class deathListener implements Listener {
         this.plugin = plugin;
     }
 
-    public Location getSpawnLocation() {
-        var config = plugin.getConfig();
-        World world = Bukkit.getWorld(config.getString("spawn.world", "world"));
-        double x = config.getDouble("spawn.x");
-        double y = config.getDouble("spawn.y");
-        double z = config.getDouble("spawn.z");
-        float yaw = (float) config.getDouble("spawn.yaw");
-        float pitch = (float) config.getDouble("spawn.pitch");
-        return new Location(world, x, y ,z, yaw, pitch);
-    }
-
     @EventHandler
     public void onEntityDamage(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player)) {
@@ -45,8 +34,6 @@ public class deathListener implements Listener {
         if (!plugin.getRoundManager().isRoundActive()) {
             event.setCancelled(true);
             Player player = (Player) event.getEntity();
-            Location spawn = getSpawnLocation();
-            player.teleport(spawn);
         }
     }
 
