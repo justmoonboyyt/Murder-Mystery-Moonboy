@@ -61,7 +61,7 @@ public class murderItemListener implements Listener {
             player.sendMessage("You have killed " + target.getName() + ".");
 
             player.setCooldown(item, COOLDOWN_TICKS);
-            plugin.getRoundManager().checkWinCondition();
+            plugin.getRoundManager().checkWinCondition(target);
         } else if (event.getAction() == Action.LEFT_CLICK_AIR || event.getAction() == Action.LEFT_CLICK_BLOCK) {
             Player player = event.getPlayer();
             ItemStack item = event.getItem();

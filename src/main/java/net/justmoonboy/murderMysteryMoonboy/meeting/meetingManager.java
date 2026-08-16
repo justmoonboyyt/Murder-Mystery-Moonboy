@@ -193,7 +193,7 @@ public class meetingManager {
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             eliminated.setHealth(0.0);
 
-            boolean roundEnded = plugin.getRoundManager().checkWinCondition();
+            boolean roundEnded = plugin.getRoundManager().checkWinCondition(eliminated);
             if (!roundEnded) {
                 endMeeting();
             } else {

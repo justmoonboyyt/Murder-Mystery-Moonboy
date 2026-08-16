@@ -14,10 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class roundManager {
     private static final long ROUND_DURATION_TICKS = 20L * 60L * 20L;
@@ -152,9 +149,18 @@ public class roundManager {
         player.showTitle(title);
     }
 
-    public boolean checkWinCondition() {
+    public boolean checkWinCondition(Player... justEliminated) {
         if (!roundActive) {
             return false;
+        }
+
+        java.util.Set<UUID> eliminatedIds = new java.util.HashSet<>();
+        if (justEliminated != null) {
+            for (Player p : justEliminated) {
+                if (p != null) {
+                    eliminatedIds.add(p.getUniqueId());
+                }
+            }
         }
 
         Player host = getHost();
@@ -163,6 +169,9 @@ public class roundManager {
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (host != null && player.getUniqueId().equals(host.getUniqueId())) {
+                continue;
+            }
+            if (eliminatedIds.contains(player.getUniqueId())) {
                 continue;
             }
             boolean isOut = player.getHealth() <= 0 || player.getGameMode() == GameMode.SPECTATOR;
