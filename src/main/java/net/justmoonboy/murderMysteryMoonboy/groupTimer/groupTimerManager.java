@@ -45,7 +45,7 @@ public class groupTimerManager {
     }
 
     private void tick() {
-        if (!plugin.getRoundManager().isRoundActive()){
+        if (!plugin.getRoundManager().isRoundActive() || plugin.getMeetingManager().isMeetingActive()){
             return;
         }
 
@@ -138,5 +138,12 @@ public class groupTimerManager {
             }
         }
         return null;
+    }
+
+    public void scatterPlayer(Player player) {
+        Location safe = findSafeLocation(player.getWorld(), plugin.getConfig());
+        if (safe != null) {
+            player.teleport(safe);
+        }
     }
 }

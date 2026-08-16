@@ -151,4 +151,52 @@ public class roundManager {
         );
         player.showTitle(title);
     }
+
+    public boolean checkWinCondition() {
+        if (!roundActive) {
+            return false;
+        }
+
+        Player host = getHost();
+        int murderersAlive = 0;
+        int innocentsAlive = 0;
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (host != null && player.getUniqueId().equals(host.getUniqueId())) {
+                continue;
+            }
+            if (player.getGameMode() == GameMode.SPECTATOR) {
+                continue;
+            }
+            boolean isMurderer = plugin.getPhantomManager().hasRole(player.getUniqueId()) || plugin.getShapeshiftManager().hasRole(player.getUniqueId());
+            if (isMurderer) {
+                murderersAlive++;
+            } else {
+                innocentsAlive++;
+            }
+        }
+
+        if (murderersAlive == 0) {
+            announceWinner("Innocents Won", NamedTextColor.GREEN);
+            endRound(plugin.getShapeshiftManager(), plugin.getPhantomManager());
+            return true;
+        }
+        if (murderersAlive >= innocentsAlive) {
+            announceWinner("Murderers Won", NamedTextColor.DARK_RED);
+            endRound(plugin.getShapeshiftManager(), plugin.getPhantomManager());
+            return true;
+        }
+        return false;
+    }
+
+    private void announceWinner(String text, NamedTextColor color) {
+        Title title = Title.title(
+                Component.text(text, color),
+                Component.empty(),
+                Title.Times.times(Duration.ofMillis(300), Duration.ofSeconds(3), Duration.ofMillis(300))
+        );
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.showTitle(title);
+        }
+    }
 }

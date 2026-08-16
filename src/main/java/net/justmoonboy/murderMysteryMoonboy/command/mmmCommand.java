@@ -215,4 +215,16 @@ public class mmmCommand {
                     return Command.SINGLE_SUCCESS;
                 });
     }
+
+    private static LiteralArgumentBuilder<CommandSourceStack> meetingBranch(MurderMysteryMoonboy plugin) {
+        return Commands.literal("meeting")
+                .requires(source -> source.getSender().isOp())
+                .then(Commands.argument("caller", ArgumentTypes.player())
+                        .executes(ctx -> {
+                            PlayerSelectorArgumentResolver resolver = ctx.getArgument("caller", PlayerSelectorArgumentResolver.class);
+                            Player caller = resolver.resolve(ctx.getSource()).get(0);
+                            plugin.getMeetingManager().callMeeting(caller);
+                            return Command.SINGLE_SUCCESS;
+                        }));
+    }
 }

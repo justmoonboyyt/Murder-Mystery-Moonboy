@@ -7,6 +7,7 @@ import net.justmoonboy.murderMysteryMoonboy.freeze.freezeListener;
 import net.justmoonboy.murderMysteryMoonboy.freeze.freezeManager;
 import net.justmoonboy.murderMysteryMoonboy.groupTimer.groupTimerManager;
 import net.justmoonboy.murderMysteryMoonboy.gui.*;
+import net.justmoonboy.murderMysteryMoonboy.meeting.meetingManager;
 import net.justmoonboy.murderMysteryMoonboy.phantom.phantomManager;
 import net.justmoonboy.murderMysteryMoonboy.round.roundManager;
 import net.justmoonboy.murderMysteryMoonboy.shapeshift.shapeshiftManager;
@@ -25,6 +26,7 @@ public final class MurderMysteryMoonboy extends JavaPlugin {
     private freezeManager FreezeManager;
     private tablistManager TablistManager;
     private groupTimerManager GroupTimerManager;
+    private meetingManager MeetingManager;
 
     @Override
     public void onEnable() {
@@ -36,6 +38,7 @@ public final class MurderMysteryMoonboy extends JavaPlugin {
         FreezeManager = new freezeManager();
         TablistManager = new tablistManager(this);
         GroupTimerManager = new groupTimerManager(this);
+        MeetingManager = new meetingManager(this);
 
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, event ->
                 event.registrar().register(mmmCommand.create(this), "Main plugin command"));
@@ -47,6 +50,7 @@ public final class MurderMysteryMoonboy extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new murderItemListener(this), this);
         Bukkit.getPluginManager().registerEvents(new vigilanteItemListener(this), this);
         Bukkit.getPluginManager().registerEvents(new blindnessItemListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new voteGUIListener(this), this);
 
         for (World world : Bukkit.getWorlds()) {
             world.setGameRule(GameRules.IMMEDIATE_RESPAWN, true);
@@ -75,6 +79,10 @@ public final class MurderMysteryMoonboy extends JavaPlugin {
 
     public groupTimerManager getGroupTimerManager() {
         return GroupTimerManager;
+    }
+
+    public meetingManager getMeetingManager(){
+        return MeetingManager;
     }
 
     @Override

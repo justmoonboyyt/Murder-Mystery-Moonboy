@@ -31,7 +31,7 @@ public class deathListener implements Listener {
         if (!(event.getEntity() instanceof Player)) {
             return;
         }
-        if (!plugin.getRoundManager().isRoundActive()) {
+        if (!plugin.getRoundManager().isRoundActive()  || plugin.getMeetingManager().isMeetingActive()) {
             event.setCancelled(true);
             Player player = (Player) event.getEntity();
         }
