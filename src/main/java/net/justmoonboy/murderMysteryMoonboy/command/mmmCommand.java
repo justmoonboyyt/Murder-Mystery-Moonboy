@@ -30,6 +30,7 @@ public class mmmCommand {
                 .then(uninvisBranch(plugin))
                 .then(freezeBranch(plugin))
                 .then(stuckBranch(plugin))
+                .then(meetingBranch(plugin))
                 .build();
     }
 

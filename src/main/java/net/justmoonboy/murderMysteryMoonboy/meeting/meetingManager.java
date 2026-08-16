@@ -158,7 +158,7 @@ public class meetingManager {
             if (entry.getValue() > maxVotes) {
                 maxVotes = entry.getValue();
                 leader = entry.getKey();
-                tied = true;
+                tied = false;
             } else if (entry.getValue() == maxVotes) {
                 tied = true;
             }

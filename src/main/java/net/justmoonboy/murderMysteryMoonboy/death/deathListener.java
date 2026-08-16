@@ -72,7 +72,11 @@ public class deathListener implements Listener {
         }
 
         event.setRespawnLocation(deathLoc);
-        Bukkit.getScheduler().runTask(plugin, () -> player.setGameMode(GameMode.SPECTATOR));
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            if (plugin.getRoundManager().isRoundActive()) {
+                player.setGameMode(GameMode.SPECTATOR);
+            }
+        });
     }
 
     public void summonText(World world, Location textLocation, String name) {

@@ -59,10 +59,12 @@ public class vigilanteItemListener implements Listener {
             if (plugin.getPhantomManager().hasRole(target.getUniqueId()) || plugin.getShapeshiftManager().hasRole(target.getUniqueId())) {
                 target.setHealth(0.0);
                 player.sendMessage("You have killed " + target.getName() + ".");
+                plugin.getRoundManager().checkWinCondition();
             } else {
                 target.setHealth(0.0);
                 player.setHealth(0.0);
                 player.sendMessage("You chose wrong.");
+                plugin.getRoundManager().checkWinCondition();
             }
 
             player.setCooldown(item, COOLDOWN_TICKS);

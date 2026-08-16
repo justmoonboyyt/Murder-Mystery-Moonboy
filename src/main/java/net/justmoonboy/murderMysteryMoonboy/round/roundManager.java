@@ -122,7 +122,7 @@ public class roundManager {
             player.teleport(spawn);
             ShapeshiftManager.resetRoundData(plugin, player);
             PhantomManager.resetRoundData(plugin, player);
-            if (!(player.getName().equals(host.getName()))){
+            if (host == null || !player.getUniqueId().equals(host.getUniqueId())) {
                 player.setGameMode(GameMode.SURVIVAL);
             }
         }
@@ -165,7 +165,8 @@ public class roundManager {
             if (host != null && player.getUniqueId().equals(host.getUniqueId())) {
                 continue;
             }
-            if (player.getGameMode() == GameMode.SPECTATOR) {
+            boolean isOut = player.getHealth() <= 0 || player.getGameMode() == GameMode.SPECTATOR;
+            if (isOut) {
                 continue;
             }
             boolean isMurderer = plugin.getPhantomManager().hasRole(player.getUniqueId()) || plugin.getShapeshiftManager().hasRole(player.getUniqueId());
@@ -177,7 +178,7 @@ public class roundManager {
         }
 
         if (murderersAlive == 0) {
-            announceWinner("Innocents Won", NamedTextColor.GREEN);
+            announceWinner("Innocents Won", NamedTextColor.DARK_GREEN);
             endRound(plugin.getShapeshiftManager(), plugin.getPhantomManager());
             return true;
         }
