@@ -18,8 +18,8 @@ import java.util.*;
 public class meetingManager {
     public static final UUID SKIP_VOTE = new UUID(0, 0);
 
-    private static final long EXPLANATION_TICKS = 20L * 60L * 2L;
-    private static final long VOTING_TICKS = 20L * 15L;
+    private static final long EXPLANATION_TICKS = 20L * 60L;
+    private static final long VOTING_TICKS = 20L * 30L;
     private static final long FREEZE_TICKS = 20L * 3L;
 
     private final MurderMysteryMoonboy plugin;
@@ -84,6 +84,7 @@ public class meetingManager {
         }
 
         phaseTask = Bukkit.getScheduler().runTaskLater(plugin, this::startVotingPhase, EXPLANATION_TICKS);
+
     }
 
     private void snapshotInventory(Player player) {
@@ -114,7 +115,7 @@ public class meetingManager {
             if (player != null) {
                 player.getInventory().addItem(verdictBell.create(plugin));
                 player.showTitle(Title.title(
-                        Component.text("Voting has begun", NamedTextColor.AQUA),
+                        Component.text("Voting has begun for " + VOTING_TICKS/20 + " seconds", NamedTextColor.AQUA),
                         Component.text("Right click the Verdict Bell to vote"),
                         Title.Times.times(Duration.ofMillis(300), Duration.ofSeconds(2), Duration.ofMillis(300))
                 ));
@@ -179,6 +180,17 @@ public class meetingManager {
     }
 
     private void runEliminationReveal(Player eliminated) {
+        // scatter and restore everyone up front, before anything is revealed or the round ends
+        for (UUID id : eligiblePlayers) {
+            Player player = Bukkit.getPlayer(id);
+            if (player == null) {
+                continue;
+            }
+            restoreInventory(player);
+            plugin.getGroupTimerManager().scatterPlayer(player);
+        }
+        snapshots.clear();
+
         String name = eliminated.getName();
         boolean isPhantom = plugin.getPhantomManager().hasRole(eliminated.getUniqueId());
         boolean isShapeshifter = plugin.getShapeshiftManager().hasRole(eliminated.getUniqueId());
@@ -192,18 +204,11 @@ public class meetingManager {
 
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             eliminated.setHealth(0.0);
-
-            boolean roundEnded = plugin.getRoundManager().checkWinCondition(eliminated);
-            if (!roundEnded) {
-                endMeeting();
-            } else {
-                meetingActive = false;
-                snapshots.clear();
-                votes.clear();
-            }
+            plugin.getRoundManager().checkWinCondition(eliminated);
+            meetingActive = false;
+            votes.clear();
         }, 20L * 7L);
     }
-
     private void broadcastTitle(String main, String sub, NamedTextColor color, int seconds) {
         Title title = Title.title(
                 Component.text(main, color),
